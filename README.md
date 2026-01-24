@@ -20,6 +20,24 @@ You can see screen recordings and screenshots of the app [here](https://brandonl
 - CoreLocation (for location services)
 - SwiftUI/UIKit (depending on your UI implementation)
 
+```mermaid
+graph TD
+    subgraph "User Interface"
+        A[SwiftUI / UIKit]
+    end
+    subgraph "Core Logic"
+        B[Swift]
+    end
+    subgraph "Services"
+        C[WeatherKit]
+        D[CoreLocation]
+    end
+
+    A --> B
+    B --> C
+    B --> D
+```
+
 ## Installation
 1. Clone the repository:
 2. Open the project in Xcode:
