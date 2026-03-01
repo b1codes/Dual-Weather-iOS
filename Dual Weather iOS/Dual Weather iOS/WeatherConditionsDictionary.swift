@@ -7,6 +7,7 @@
 
 import Foundation
 import WeatherKit
+import SwiftUI
 
 var WeatherConditionsDictionary : [WeatherCondition: [Bool : String]] = [ // Bool true = isDaylight , false = !isDaylight
     .blowingDust: [true: "sun.dust.fill", false: "moon.dust.fill"],
@@ -43,4 +44,68 @@ var WeatherConditionsDictionary : [WeatherCondition: [Bool : String]] = [ // Boo
     .heavySnow: [true: "cloud.snow.fill", false: "cloud.snow.fill"],
     .hurricane: [true: "hurricane", false: "hurricane"],
     .tropicalStorm: [true: "tropicalstorm", false: "tropicalstorm"]
+]
+
+var WeatherEmojiDictionary: [WeatherCondition: String] = [
+    .blowingDust: "🌪️",
+    .clear: "☀️",
+    .cloudy: "☁️",
+    .foggy: "🌫️",
+    .haze: "🌫️",
+    .mostlyClear: "🌤️",
+    .mostlyCloudy: "🌥️",
+    .partlyCloudy: "⛅",
+    .smoky: "💨",
+    .breezy: "🌬️",
+    .windy: "💨",
+    .drizzle: "🌦️",
+    .heavyRain: "🌧️",
+    .isolatedThunderstorms: "⛈️",
+    .rain: "🌧️",
+    .sunShowers: "🌦️",
+    .scatteredThunderstorms: "⛈️",
+    .strongStorms: "🌩️",
+    .thunderstorms: "⛈️",
+    .frigid: "🥶",
+    .hail: "🌨️",
+    .hot: "🥵",
+    .flurries: "🌨️",
+    .sleet: "🌨️",
+    .snow: "❄️",
+    .sunFlurries: "🌦️",
+    .wintryMix: "🌨️",
+    .blizzard: "❄️",
+    .blowingSnow: "❄️",
+    .freezingDrizzle: "🌧️",
+    .freezingRain: "🌧️",
+    .heavySnow: "❄️",
+    .hurricane: "🌀",
+    .tropicalStorm: "🌀"
+]
+
+var WeatherBackgroundColors: [WeatherCondition: [Color]] = [
+    .clear: [Color.blue, Color.cyan],
+    .mostlyClear: [Color.blue, Color.cyan],
+    .partlyCloudy: [Color.blue, Color.gray],
+    .mostlyCloudy: [Color.gray, Color.blue],
+    .cloudy: [Color.gray, Color.secondary],
+    .foggy: [Color.gray.opacity(0.8), Color.gray],
+    .haze: [Color.orange.opacity(0.3), Color.blue.opacity(0.3)],
+    .windy: [Color.blue.opacity(0.5), Color.gray],
+    .breezy: [Color.blue.opacity(0.4), Color.cyan.opacity(0.4)],
+    .rain: [Color.blue.opacity(0.8), Color.black.opacity(0.6)],
+    .heavyRain: [Color.blue, Color.black],
+    .drizzle: [Color.blue.opacity(0.6), Color.gray],
+    .sunShowers: [Color.yellow.opacity(0.5), Color.blue.opacity(0.5)],
+    .thunderstorms: [Color.purple.opacity(0.7), Color.black],
+    .scatteredThunderstorms: [Color.purple.opacity(0.5), Color.black.opacity(0.8)],
+    .strongStorms: [Color.purple, Color.black],
+    .snow: [Color.white, Color.blue.opacity(0.3)],
+    .heavySnow: [Color.white, Color.gray.opacity(0.5)],
+    .flurries: [Color.white.opacity(0.8), Color.blue.opacity(0.2)],
+    .blizzard: [Color.white, Color.gray],
+    .frigid: [Color.blue, Color.white],
+    .hot: [Color.red, Color.orange],
+    .hurricane: [Color.black, Color.red.opacity(0.5)],
+    .tropicalStorm: [Color.black, Color.blue.opacity(0.5)]
 ]
