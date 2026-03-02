@@ -93,14 +93,14 @@ struct Location: Codable, Hashable {
     // Encoding function to conform to `Encodable`
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
+
         let displayName = "\(city), \(state)"
         try container.encode(displayName, forKey: .displayName)
-        
+
         if let latitude = latitude {
             try container.encode(String(latitude), forKey: .lat)
         }
-        
+
         if let longitude = longitude {
             try container.encode(String(longitude), forKey: .lon)
         }

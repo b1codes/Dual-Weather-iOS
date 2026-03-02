@@ -37,7 +37,7 @@ class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
             }
         }
     }
-    
+
     // Fetch CLLocation from location name
     func fetchCoordinates(from address: String, completion: @escaping (Result<CLLocation, Error>) -> Void) {
         geocoder.geocodeAddressString(address) { placemarks, error in

@@ -12,10 +12,9 @@ struct LocationCard: View {
     var location: Location
     @State private var coordinate: CLLocationCoordinate2D? // To store fetched coordinates
     @State private var errorMessage: String? // To handle errors
-    
+
     let maxHeight: CGFloat = 200
     let maxWidth: CGFloat = 150
-
 
     var body: some View {
         VStack {
@@ -45,7 +44,7 @@ struct LocationCard: View {
             }
         }
     }
-    
+
     private func fetchCoordinates() {
         LocationService.shared.getCoordinates(forCity: location.city, state: location.state) { result in
             DispatchQueue.main.async {

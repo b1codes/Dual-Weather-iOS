@@ -1,5 +1,5 @@
 //
-//  WeatherConditionsDictionary.swift
+//  weatherConditionsDictionary.swift
 //  Dual Weather iOS
 //
 //  Created by Brandon Lamer-Connolly on 1/26/25.
@@ -9,7 +9,7 @@ import Foundation
 import WeatherKit
 import SwiftUI
 
-var WeatherConditionsDictionary : [WeatherCondition: [Bool : String]] = [ // Bool true = isDaylight , false = !isDaylight
+var weatherConditionsDictionary: [WeatherCondition: [Bool: String]] = [ // Bool true = isDaylight , false = !isDaylight
     .blowingDust: [true: "sun.dust.fill", false: "moon.dust.fill"],
     .clear: [true: "sun.max.fill", false: "moon.stars.fill"],
     .cloudy: [true: "cloud.fill", false: "cloud.fill"],
@@ -46,7 +46,7 @@ var WeatherConditionsDictionary : [WeatherCondition: [Bool : String]] = [ // Boo
     .tropicalStorm: [true: "tropicalstorm", false: "tropicalstorm"]
 ]
 
-var WeatherEmojiDictionary: [WeatherCondition: String] = [
+var weatherEmojiDictionary: [WeatherCondition: String] = [
     .blowingDust: "🌪️",
     .clear: "☀️",
     .cloudy: "☁️",
@@ -83,7 +83,7 @@ var WeatherEmojiDictionary: [WeatherCondition: String] = [
     .tropicalStorm: "🌀"
 ]
 
-var WeatherBackgroundColors: [WeatherCondition: [Color]] = [
+var weatherBackgroundColors: [WeatherCondition: [Color]] = [
     .clear: [Color.blue, Color.cyan],
     .mostlyClear: [Color.blue, Color.cyan],
     .partlyCloudy: [Color.blue, Color.gray],

@@ -14,8 +14,8 @@ struct SavedLocationsView: View {
     @State private var isLoading = true           // Loading state
     @State private var errorMessage: String?      // Error message state
     @State private var isEditing = false          // Edit mode toggle
-    
-    let db = Firestore.firestore() // Firestore instance
+
+    let database = Firestore.firestore() // Firestore instance
 
     let columns = [
         GridItem(.flexible(), spacing: 10),
@@ -63,10 +63,10 @@ struct SavedLocationsView: View {
 
     // Delete location from Firestore
     private func deleteLocation(_ location: Location) {
-        let query = db.collection("locations")
+        let query = database.collection("locations")
             .whereField("city", isEqualTo: location.city)
             .whereField("state", isEqualTo: location.state)
-        
+
         query.getDocuments { snapshot, error in
             DispatchQueue.main.async {
                 if let error = error {
@@ -88,7 +88,7 @@ struct SavedLocationsView: View {
 
     // Separate function to delete Firestore document
     private func deleteDocument(documentID: String, location: Location) {
-        db.collection("locations").document(documentID).delete { error in
+        database.collection("locations").document(documentID).delete { error in
             DispatchQueue.main.async {
                 if let error = error {
                     self.errorMessage = "Failed to delete: \(error.localizedDescription)"
@@ -123,7 +123,7 @@ struct LocationsGrid: View {
                 LazyVGrid(columns: columns, spacing: 30) {
                     ForEach(locations, id: \.city) { location in
                         NavigationLink(destination: WeatherDetailsView(locationName: location.locationString())) {
-                            
+
                             LocationCard(location: location)
                                 .overlay(
                                     ZStack {
@@ -132,7 +132,7 @@ struct LocationsGrid: View {
                                                 .background(.ultraThinMaterial) // iOS blur effect
                                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                                                 .frame(width: 150, height: 200)
-                                            
+
                                             DeleteButton(location: location, deleteAction: deleteAction)
                                                 .padding(8)
                                         }
@@ -167,7 +167,6 @@ struct DeleteButton: View {
         }
     }
 }
-
 
 #Preview {
     SavedLocationsView()
