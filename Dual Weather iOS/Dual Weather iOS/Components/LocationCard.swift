@@ -36,6 +36,9 @@ struct LocationCard: View {
         }
         .padding()
         .frame(width: maxWidth, height: maxHeight)
+        .background(.thinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .shadow(color: .black.opacity(0.12), radius: 8, x: 0, y: 4)
         .onAppear {
             if let lat = location.latitude, let lon = location.longitude {
                 coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)

@@ -128,9 +128,8 @@ struct LocationsGrid: View {
                                 .overlay(
                                     ZStack {
                                         if isEditing {
-                                            Color.white.opacity(0.3) // Slight opacity for better contrast
-                                                .background(.ultraThinMaterial) // iOS blur effect
-                                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                            Color.black.opacity(0.18)
+                                                .clipShape(RoundedRectangle(cornerRadius: 14))
                                                 .frame(width: 150, height: 200)
 
                                             DeleteButton(location: location, deleteAction: deleteAction)
@@ -138,9 +137,6 @@ struct LocationsGrid: View {
                                         }
                                     }
                                 )
-                                .background(Color(.systemGray6))
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                                .shadow(radius: 3)
                                 .frame(width: 150, height: 200)
                         }
                         .buttonStyle(PlainButtonStyle())
@@ -157,13 +153,15 @@ struct DeleteButton: View {
     let deleteAction: (Location) -> Void
 
     var body: some View {
-        Button(action: { deleteAction(location) }) {
-            Image(systemName: "trash")
-                .foregroundColor(.red)
-                .padding(8)
-                .background(Color.white)
-                .clipShape(Circle())
-                .shadow(radius: 3)
+        if #available(iOS 26.0, *) {
+            Button(action: { deleteAction(location) }) {
+                Image(systemName: "trash")
+                    .foregroundStyle(.red)
+                    .padding(10)
+            }
+            .buttonStyle(.glass(.regular.tint(.red)))
+        } else {
+            // Fallback on earlier versions
         }
     }
 }

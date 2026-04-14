@@ -38,17 +38,27 @@ struct SearchCard: View {
             Text(location.locationString())
                 .lineLimit(1)
             Spacer()
-            Button(action: addToFirestore) {
-                Image(systemName: isSaving || isAlreadySaved ? "checkmark.circle.fill" : "plus.circle")
-                    .resizable()
-                    .frame(width: 24, height: 24)
-                    .foregroundColor(.blue)
+            if #available(iOS 26.0, *) {
+                Button(action: addToFirestore) {
+                    Image(systemName: isSaving || isAlreadySaved ? "checkmark" : "plus")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(isAlreadySaved ? .green : .blue)
+                        .padding(8)
+                }
+                .buttonStyle(.glass)
+                .disabled(isSaving || isAlreadySaved)
+            } else {
+                // Fallback on earlier versions
             }
-            .disabled(isSaving || isAlreadySaved) // Disable while saving
 
         }
         .padding()
         .frame(maxWidth: maxWidth, maxHeight: maxHeight)
+        .background(.thinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 2)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 4)
         .onAppear {
             if let lat = location.latitude, let lon = location.longitude {
                 coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
