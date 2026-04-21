@@ -18,9 +18,9 @@ struct LocationModelTests {
 
     @Test("Decodes city and state from display_name")
     func decodesFromNominatimJSON() throws {
-        let json = """
+        let json = Data("""
         {"display_name": "Chicago, Cook County, Illinois, United States", "lat": "41.8781", "lon": "-87.6298"}
-        """.data(using: .utf8)!
+        """.utf8)
 
         let location = try JSONDecoder().decode(Location.self, from: json)
         #expect(location.city == "Chicago")
@@ -29,9 +29,9 @@ struct LocationModelTests {
 
     @Test("Decodes latitude and longitude as Doubles")
     func decodesCoordinates() throws {
-        let json = """
+        let json = Data("""
         {"display_name": "Austin, Travis County, Texas, United States", "lat": "30.2672", "lon": "-97.7431"}
-        """.data(using: .utf8)!
+        """.utf8)
 
         let location = try JSONDecoder().decode(Location.self, from: json)
         #expect(abs((location.latitude ?? 0) - 30.2672) < 0.0001)
@@ -40,9 +40,9 @@ struct LocationModelTests {
 
     @Test("Handles missing lat/lon gracefully")
     func handlesMissingCoordinates() throws {
-        let json = """
+        let json = Data("""
         {"display_name": "Portland, Multnomah County, Oregon, United States"}
-        """.data(using: .utf8)!
+        """.utf8)
 
         let location = try JSONDecoder().decode(Location.self, from: json)
         #expect(location.latitude == nil)
@@ -51,9 +51,9 @@ struct LocationModelTests {
 
     @Test("Uses 'Unknown City' when display_name is empty")
     func handlesEmptyDisplayName() throws {
-        let json = """
+        let json = Data("""
         {"display_name": ""}
-        """.data(using: .utf8)!
+        """.utf8)
 
         let location = try JSONDecoder().decode(Location.self, from: json)
         #expect(location.city == "Unknown City")
@@ -127,7 +127,7 @@ struct LocationModelTests {
         // State ends up as the 3rd component after re-splitting — encode writes "city, state" (2 parts),
         // so dropFirst().dropFirst() yields nothing → "Unknown State". This documents current behavior.
         // If the encoding format changes, this test will catch it.
-        let _ = decoded // encoded round-trip decoding is intentionally lossy; covered by above checks
+        _ = decoded // encoded round-trip decoding is intentionally lossy; covered by above checks
     }
 }
 
@@ -167,8 +167,8 @@ struct StateAbbreviationTests {
 // MARK: - Temperature Conversion Tests
 
 /// Pure conversion functions mirroring ConvertView's formulas
-private func fahrenheitToCelsius(_ f: Double) -> Double { (f - 32) * 5 / 9 }
-private func celsiusToFahrenheit(_ c: Double) -> Double { (c * 9 / 5) + 32 }
+private func fahrenheitToCelsius(_ fahrenheit: Double) -> Double { (fahrenheit - 32) * 5 / 9 }
+private func celsiusToFahrenheit(_ celsius: Double) -> Double { (celsius * 9 / 5) + 32 }
 
 @Suite("Temperature Conversion")
 struct TemperatureConversionTests {
@@ -212,8 +212,8 @@ struct TemperatureConversionTests {
     @Test("Conversions are inverse of each other")
     func roundTrip() {
         let values: [Double] = [-40, 0, 20, 37, 100]
-        for f in values {
-            #expect(abs(celsiusToFahrenheit(fahrenheitToCelsius(f)) - f) < 0.0001)
+        for val in values {
+            #expect(abs(celsiusToFahrenheit(fahrenheitToCelsius(val)) - val) < 0.0001)
         }
     }
 }

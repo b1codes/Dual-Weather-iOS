@@ -8,6 +8,45 @@
 @preconcurrency import WeatherKit
 import CoreLocation
 
+actor WeatherCache {
+    static let shared = WeatherCache()
+    private init() {}
+
+    private struct Entry {
+        let weather: Weather
+        let fetchedAt: Date
+    }
+
+    private var cache: [String: Entry] = [:]
+    private let ttl: TimeInterval = 600 // 10 minutes
+
+    func get(for location: CLLocation) -> Weather? {
+        let key = cacheKey(for: location)
+        guard let entry = cache[key], Date().timeIntervalSince(entry.fetchedAt) < ttl else {
+            return nil
+        }
+        return entry.weather
+    }
+
+    func set(_ weather: Weather, for location: CLLocation) {
+        if cache.count >= 100 {
+            cache = cache.filter { Date().timeIntervalSince($0.value.fetchedAt) < ttl }
+        }
+        cache[cacheKey(for: location)] = Entry(weather: weather, fetchedAt: Date())
+    }
+
+    func invalidate(for location: CLLocation) {
+        cache.removeValue(forKey: cacheKey(for: location))
+    }
+
+    // 2 decimal places ≈ 1.1 km latitude grid; longitude bucket shrinks at high latitudes
+    private func cacheKey(for location: CLLocation) -> String {
+        let lat = (location.coordinate.latitude * 100).rounded() / 100
+        let lon = (location.coordinate.longitude * 100).rounded() / 100
+        return "\(lat),\(lon)"
+    }
+}
+
 class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var currentWeather: Weather?
     @Published var currentLocation: String?
@@ -17,6 +56,7 @@ class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let weatherService = WeatherService()
     private let locationManager = CLLocationManager()
     private let geocoder = CLGeocoder()
+    private var pendingForceRefresh = false
 
     override init() {
         super.init()
@@ -24,7 +64,8 @@ class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
 
-    func requestLocation() {
+    func requestLocation(forceRefresh: Bool = false) {
+        pendingForceRefresh = forceRefresh
         locationManager.requestWhenInUseAuthorization()
     }
 
@@ -70,8 +111,10 @@ class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
+            let forceRefresh = pendingForceRefresh
+            pendingForceRefresh = false
             Task {
-                await fetchWeather(for: location)
+                await fetchWeather(for: location, forceRefresh: forceRefresh)
                 await fetchLocationName(for: location)
             }
             locationManager.stopUpdatingLocation()
@@ -82,9 +125,23 @@ class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationError = "Failed to find location: \(error.localizedDescription)"
     }
 
-    func fetchWeather(for location: CLLocation) async {
+    // Used by pull-to-refresh: awaitable so the spinner stays alive until data arrives
+    func refreshCurrentWeather() async {
+        guard let last = locationManager.location else { return }
+        await fetchWeather(for: last, forceRefresh: true)
+        await fetchLocationName(for: last)
+    }
+
+    func fetchWeather(for location: CLLocation, forceRefresh: Bool = false) async {
+        if !forceRefresh, let cached = await WeatherCache.shared.get(for: location) {
+            await MainActor.run {
+                self.currentWeather = cached
+            }
+            return
+        }
         do {
             let weather = try await weatherService.weather(for: location)
+            await WeatherCache.shared.set(weather, for: location)
             await MainActor.run {
                 self.currentWeather = weather
             }

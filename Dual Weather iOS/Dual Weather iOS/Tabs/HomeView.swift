@@ -33,7 +33,7 @@ struct HomeView: View {
             .navigationTitle("Current Weather")
             .navigationBarTitleDisplayMode(.automatic)
             .refreshable {
-                viewModel.requestLocation()
+                await viewModel.refreshCurrentWeather()
             }
         }
         .onAppear {
