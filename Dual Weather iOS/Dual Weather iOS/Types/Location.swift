@@ -84,7 +84,7 @@ struct Location: Codable, Hashable {
         let lonString = try? values.decode(String.self, forKey: .lon)
 
         let components = displayName.components(separatedBy: ", ")
-        self.city = components.first ?? "Unknown City"
+        self.city = components.first.flatMap { $0.isEmpty ? nil : $0 } ?? "Unknown City"
         self.state = components.dropFirst().dropFirst().first ?? "Unknown State"
         self.latitude = latString.flatMap(Double.init)
         self.longitude = lonString.flatMap(Double.init)
