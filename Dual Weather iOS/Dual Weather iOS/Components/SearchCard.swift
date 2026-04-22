@@ -15,12 +15,11 @@ struct SearchCard: View {
     @State private var errorMessage: String? // To handle errors
     @State private var isSaving: Bool = false // Loading state for Firestore operation
     @State private var isAlreadySaved: Bool = false // Track if the location is already saved
-    
+
     let maxHeight: CGFloat = 100
     let maxWidth: CGFloat = 600
 
-    let db = Firestore.firestore() // Firestore instance
-
+    let database = Firestore.firestore() // Firestore instance
 
     var body: some View {
         HStack {
@@ -35,21 +34,31 @@ struct SearchCard: View {
                 ProgressView("Loading...")
                     .frame(width: 130, height: 130) // Placeholder while loading coordinates
             }
-            
+
             Text(location.locationString())
                 .lineLimit(1)
             Spacer()
-            Button(action: addToFirestore) {
-                Image(systemName: isSaving || isAlreadySaved ? "checkmark.circle.fill" : "plus.circle")
-                    .resizable()
-                    .frame(width: 24, height: 24)
-                    .foregroundColor(.blue)
+            if #available(iOS 26.0, *) {
+                Button(action: addToFirestore) {
+                    Image(systemName: isSaving || isAlreadySaved ? "checkmark" : "plus")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(isAlreadySaved ? .green : .blue)
+                        .padding(8)
+                }
+                .buttonStyle(.glass)
+                .disabled(isSaving || isAlreadySaved)
+            } else {
+                // Fallback on earlier versions
             }
-            .disabled(isSaving || isAlreadySaved) // Disable while saving
 
         }
         .padding()
         .frame(maxWidth: maxWidth, maxHeight: maxHeight)
+        .background(.thinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 2)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 4)
         .onAppear {
             if let lat = location.latitude, let lon = location.longitude {
                 coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
@@ -59,7 +68,7 @@ struct SearchCard: View {
             checkIfLocationIsSaved()
         }
     }
-    
+
     private func fetchCoordinates() {
         LocationService.shared.getCoordinates(forCity: location.city, state: location.state) { result in
             DispatchQueue.main.async {
@@ -73,9 +82,9 @@ struct SearchCard: View {
             }
         }
     }
-    
+
     private func checkIfLocationIsSaved() {
-        db.collection("locations")
+        database.collection("locations")
             .whereField("city", isEqualTo: location.city)
             .whereField("state", isEqualTo: location.state)
             .getDocuments { snapshot, error in
@@ -88,20 +97,20 @@ struct SearchCard: View {
                 }
             }
     }
-    
+
     private func addToFirestore() {
         guard let coordinate = coordinate else { return }
-        
+
         let locationData: [String: Any] = [
             "city": location.city,
             "state": location.state,
             "latitude": coordinate.latitude,
-            "longitude": coordinate.longitude,
+            "longitude": coordinate.longitude
         ]
-        
+
         isSaving = true
-        
-        db.collection("locations").addDocument(data: locationData) { error in
+
+        database.collection("locations").addDocument(data: locationData) { error in
             DispatchQueue.main.async {
                 if let error = error {
                     errorMessage = error.localizedDescription

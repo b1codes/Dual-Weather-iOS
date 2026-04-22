@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct HomeView: View {
     @StateObject private var viewModel = WeatherViewModel()
 
@@ -34,7 +33,7 @@ struct HomeView: View {
             .navigationTitle("Current Weather")
             .navigationBarTitleDisplayMode(.automatic)
             .refreshable {
-                viewModel.requestLocation()
+                await viewModel.refreshCurrentWeather()
             }
         }
         .onAppear {

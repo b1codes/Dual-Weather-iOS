@@ -1,5 +1,5 @@
 //
-//  WeatherConditionsDictionary.swift
+//  weatherConditionsDictionary.swift
 //  Dual Weather iOS
 //
 //  Created by Brandon Lamer-Connolly on 1/26/25.
@@ -7,8 +7,9 @@
 
 import Foundation
 import WeatherKit
+import SwiftUI
 
-var WeatherConditionsDictionary : [WeatherCondition: [Bool : String]] = [ // Bool true = isDaylight , false = !isDaylight
+var weatherConditionsDictionary: [WeatherCondition: [Bool: String]] = [ // Bool true = isDaylight , false = !isDaylight
     .blowingDust: [true: "sun.dust.fill", false: "moon.dust.fill"],
     .clear: [true: "sun.max.fill", false: "moon.stars.fill"],
     .cloudy: [true: "cloud.fill", false: "cloud.fill"],
@@ -43,4 +44,115 @@ var WeatherConditionsDictionary : [WeatherCondition: [Bool : String]] = [ // Boo
     .heavySnow: [true: "cloud.snow.fill", false: "cloud.snow.fill"],
     .hurricane: [true: "hurricane", false: "hurricane"],
     .tropicalStorm: [true: "tropicalstorm", false: "tropicalstorm"]
+]
+
+var weatherEmojiDictionary: [WeatherCondition: String] = [
+    .blowingDust: "🌪️",
+    .clear: "☀️",
+    .cloudy: "☁️",
+    .foggy: "🌫️",
+    .haze: "🌫️",
+    .mostlyClear: "🌤️",
+    .mostlyCloudy: "🌥️",
+    .partlyCloudy: "⛅",
+    .smoky: "💨",
+    .breezy: "🌬️",
+    .windy: "💨",
+    .drizzle: "🌦️",
+    .heavyRain: "🌧️",
+    .isolatedThunderstorms: "⛈️",
+    .rain: "🌧️",
+    .sunShowers: "🌦️",
+    .scatteredThunderstorms: "⛈️",
+    .strongStorms: "🌩️",
+    .thunderstorms: "⛈️",
+    .frigid: "🥶",
+    .hail: "🌨️",
+    .hot: "🥵",
+    .flurries: "🌨️",
+    .sleet: "🌨️",
+    .snow: "❄️",
+    .sunFlurries: "🌦️",
+    .wintryMix: "🌨️",
+    .blizzard: "❄️",
+    .blowingSnow: "❄️",
+    .freezingDrizzle: "🌧️",
+    .freezingRain: "🌧️",
+    .heavySnow: "❄️",
+    .hurricane: "🌀",
+    .tropicalStorm: "🌀"
+]
+
+var weatherBackgroundColors: [WeatherCondition: [Color]] = [
+    .clear: [Color(red: 0.0, green: 0.28, blue: 0.82), Color(red: 0.0, green: 0.58, blue: 1.0), Color(red: 0.38, green: 0.82, blue: 1.0)],
+    .mostlyClear: [Color(red: 0.05, green: 0.32, blue: 0.80), Color(red: 0.1, green: 0.60, blue: 0.96), Color(red: 0.48, green: 0.80, blue: 1.0)],
+    .partlyCloudy: [Color(red: 0.15, green: 0.38, blue: 0.72), Color(red: 0.28, green: 0.52, blue: 0.78), Color(red: 0.48, green: 0.62, blue: 0.72)],
+    .mostlyCloudy: [Color(red: 0.32, green: 0.40, blue: 0.50), Color(red: 0.40, green: 0.48, blue: 0.62), Color(red: 0.50, green: 0.56, blue: 0.68)],
+    .cloudy: [Color(red: 0.38, green: 0.42, blue: 0.50), Color(red: 0.50, green: 0.52, blue: 0.58), Color(red: 0.60, green: 0.60, blue: 0.63)],
+    .foggy: [Color(red: 0.48, green: 0.50, blue: 0.53), Color(red: 0.60, green: 0.60, blue: 0.63), Color(red: 0.70, green: 0.70, blue: 0.71)],
+    .haze: [Color(red: 0.68, green: 0.52, blue: 0.28), Color(red: 0.73, green: 0.62, blue: 0.42), Color(red: 0.52, green: 0.52, blue: 0.58)],
+    .smoky: [Color(red: 0.30, green: 0.28, blue: 0.25), Color(red: 0.45, green: 0.42, blue: 0.38), Color(red: 0.55, green: 0.52, blue: 0.48)],
+    .windy: [Color(red: 0.18, green: 0.42, blue: 0.72), Color(red: 0.32, green: 0.58, blue: 0.82), Color(red: 0.48, green: 0.68, blue: 0.82)],
+    .breezy: [Color(red: 0.22, green: 0.52, blue: 0.82), Color(red: 0.38, green: 0.65, blue: 0.90), Color(red: 0.58, green: 0.78, blue: 0.93)],
+    .rain: [Color(red: 0.08, green: 0.18, blue: 0.52), Color(red: 0.12, green: 0.32, blue: 0.68), Color(red: 0.28, green: 0.42, blue: 0.62)],
+    .heavyRain: [Color(red: 0.04, green: 0.08, blue: 0.38), Color(red: 0.08, green: 0.18, blue: 0.52), Color(red: 0.18, green: 0.28, blue: 0.52)],
+    .drizzle: [Color(red: 0.18, green: 0.35, blue: 0.62), Color(red: 0.28, green: 0.48, blue: 0.72), Color(red: 0.42, green: 0.55, blue: 0.70)],
+    .sunShowers: [Color(red: 0.58, green: 0.48, blue: 0.18), Color(red: 0.32, green: 0.48, blue: 0.72), Color(red: 0.28, green: 0.58, blue: 0.82)],
+    .thunderstorms: [Color(red: 0.10, green: 0.02, blue: 0.22), Color(red: 0.26, green: 0.04, blue: 0.42), Color(red: 0.18, green: 0.16, blue: 0.32)],
+    .isolatedThunderstorms: [Color(red: 0.12, green: 0.02, blue: 0.28), Color(red: 0.30, green: 0.06, blue: 0.50), Color(red: 0.22, green: 0.22, blue: 0.42)],
+    .scatteredThunderstorms: [Color(red: 0.16, green: 0.04, blue: 0.32), Color(red: 0.28, green: 0.06, blue: 0.48), Color(red: 0.20, green: 0.18, blue: 0.36)],
+    .strongStorms: [Color(red: 0.06, green: 0.0, blue: 0.18), Color(red: 0.22, green: 0.02, blue: 0.38), Color(red: 0.12, green: 0.08, blue: 0.28)],
+    .snow: [Color(red: 0.52, green: 0.70, blue: 0.90), Color(red: 0.70, green: 0.82, blue: 0.95), Color(red: 0.86, green: 0.92, blue: 0.97)],
+    .heavySnow: [Color(red: 0.48, green: 0.62, blue: 0.82), Color(red: 0.65, green: 0.78, blue: 0.92), Color(red: 0.83, green: 0.89, blue: 0.95)],
+    .flurries: [Color(red: 0.55, green: 0.72, blue: 0.90), Color(red: 0.70, green: 0.83, blue: 0.95), Color(red: 0.86, green: 0.91, blue: 0.96)],
+    .sunFlurries: [Color(red: 0.60, green: 0.75, blue: 0.92), Color(red: 0.75, green: 0.85, blue: 0.96), Color(red: 0.88, green: 0.93, blue: 0.97)],
+    .wintryMix: [Color(red: 0.45, green: 0.62, blue: 0.82), Color(red: 0.60, green: 0.75, blue: 0.90), Color(red: 0.75, green: 0.84, blue: 0.93)],
+    .blizzard: [Color(red: 0.42, green: 0.55, blue: 0.75), Color(red: 0.57, green: 0.70, blue: 0.85), Color(red: 0.78, green: 0.83, blue: 0.90)],
+    .blowingSnow: [Color(red: 0.40, green: 0.55, blue: 0.78), Color(red: 0.55, green: 0.70, blue: 0.88), Color(red: 0.72, green: 0.82, blue: 0.93)],
+    .sleet: [Color(red: 0.35, green: 0.50, blue: 0.72), Color(red: 0.50, green: 0.65, blue: 0.83), Color(red: 0.65, green: 0.76, blue: 0.88)],
+    .freezingDrizzle: [Color(red: 0.28, green: 0.42, blue: 0.68), Color(red: 0.42, green: 0.58, blue: 0.78), Color(red: 0.58, green: 0.70, blue: 0.85)],
+    .freezingRain: [Color(red: 0.22, green: 0.38, blue: 0.65), Color(red: 0.35, green: 0.52, blue: 0.75), Color(red: 0.52, green: 0.65, blue: 0.82)],
+    .hail: [Color(red: 0.30, green: 0.45, blue: 0.70), Color(red: 0.45, green: 0.60, blue: 0.80), Color(red: 0.60, green: 0.72, blue: 0.88)],
+    .frigid: [Color(red: 0.04, green: 0.22, blue: 0.62), Color(red: 0.18, green: 0.48, blue: 0.82), Color(red: 0.58, green: 0.76, blue: 0.93)],
+    .hot: [Color(red: 0.82, green: 0.12, blue: 0.04), Color(red: 0.93, green: 0.42, blue: 0.08), Color(red: 0.97, green: 0.63, blue: 0.18)],
+    .blowingDust: [Color(red: 0.62, green: 0.45, blue: 0.18), Color(red: 0.75, green: 0.60, blue: 0.30), Color(red: 0.82, green: 0.72, blue: 0.50)],
+    .hurricane: [Color(red: 0.04, green: 0.02, blue: 0.10), Color(red: 0.32, green: 0.04, blue: 0.06), Color(red: 0.10, green: 0.08, blue: 0.18)],
+    .tropicalStorm: [Color(red: 0.04, green: 0.06, blue: 0.22), Color(red: 0.08, green: 0.16, blue: 0.45), Color(red: 0.18, green: 0.26, blue: 0.52)]
+]
+
+var weatherConditionAccentColors: [WeatherCondition: Color] = [
+    .blowingDust: Color(red: 0.85, green: 0.65, blue: 0.35),
+    .clear: Color(red: 1.0, green: 0.82, blue: 0.18),
+    .cloudy: Color(red: 0.60, green: 0.65, blue: 0.75),
+    .foggy: Color(red: 0.65, green: 0.65, blue: 0.70),
+    .haze: Color(red: 0.80, green: 0.70, blue: 0.50),
+    .mostlyClear: Color(red: 1.0, green: 0.82, blue: 0.22),
+    .mostlyCloudy: Color(red: 0.55, green: 0.62, blue: 0.75),
+    .partlyCloudy: Color(red: 0.45, green: 0.72, blue: 1.0),
+    .smoky: Color(red: 0.50, green: 0.45, blue: 0.40),
+    .breezy: Color(red: 0.45, green: 0.78, blue: 1.0),
+    .windy: Color(red: 0.40, green: 0.72, blue: 0.95),
+    .drizzle: Color(red: 0.50, green: 0.65, blue: 0.95),
+    .heavyRain: Color(red: 0.25, green: 0.45, blue: 0.85),
+    .isolatedThunderstorms: Color(red: 0.60, green: 0.30, blue: 0.90),
+    .rain: Color(red: 0.35, green: 0.55, blue: 0.90),
+    .sunShowers: Color(red: 0.85, green: 0.75, blue: 0.30),
+    .scatteredThunderstorms: Color(red: 0.55, green: 0.25, blue: 0.85),
+    .strongStorms: Color(red: 0.50, green: 0.15, blue: 0.80),
+    .thunderstorms: Color(red: 0.55, green: 0.20, blue: 0.85),
+    .frigid: Color(red: 0.50, green: 0.75, blue: 1.0),
+    .hail: Color(red: 0.55, green: 0.78, blue: 1.0),
+    .hot: Color(red: 1.0, green: 0.35, blue: 0.20),
+    .flurries: Color(red: 0.72, green: 0.88, blue: 1.0),
+    .sleet: Color(red: 0.60, green: 0.75, blue: 0.92),
+    .snow: Color(red: 0.72, green: 0.90, blue: 1.0),
+    .sunFlurries: Color(red: 0.80, green: 0.88, blue: 1.0),
+    .wintryMix: Color(red: 0.65, green: 0.82, blue: 0.97),
+    .blizzard: Color(red: 0.82, green: 0.92, blue: 1.0),
+    .blowingSnow: Color(red: 0.75, green: 0.90, blue: 1.0),
+    .freezingDrizzle: Color(red: 0.55, green: 0.72, blue: 0.92),
+    .freezingRain: Color(red: 0.50, green: 0.68, blue: 0.90),
+    .heavySnow: Color(red: 0.80, green: 0.93, blue: 1.0),
+    .hurricane: Color(red: 0.85, green: 0.25, blue: 0.25),
+    .tropicalStorm: Color(red: 0.30, green: 0.45, blue: 0.75)
 ]

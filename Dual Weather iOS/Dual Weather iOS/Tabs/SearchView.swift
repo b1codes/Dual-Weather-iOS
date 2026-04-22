@@ -12,7 +12,7 @@ struct SearchView: View {
     @State private var searchText: String = ""
     @State private var isLoading = false
     @FocusState private var isTextFieldFocused: Bool // Focus management for TextField
-    
+
     @MainActor
     func startSearch() async {
         guard !self.searchText.isEmpty else { return }
@@ -23,13 +23,12 @@ struct SearchView: View {
 
         // Perform search and handle results
         let results: [Location] = await performSearch()
-        
+
         self.results = results // Update results
 
         self.isLoading = false // Stop loading
         print("done searching!")
     }
-
 
     func resetSearch() {
         // Reset all states explicitly
@@ -38,15 +37,15 @@ struct SearchView: View {
         isLoading = false
         isTextFieldFocused = false // Clear keyboard focus
     }
-    
+
     func performSearch() async -> [Location] {
         self.isLoading = true
         defer { self.isLoading = false }
-        
+
         return await LocationService.shared.searchLocations(for: searchText)
 
     }
-    
+
     var body: some View {
         NavigationView {
             ScrollView {
@@ -65,7 +64,7 @@ struct SearchView: View {
                             .background(Color(.systemGray4))
                             .cornerRadius(8)
                             .padding(.horizontal, 10)
-                        
+
                         if !searchText.isEmpty {
                             Button("Cancel") {
                                 resetSearch()
@@ -77,7 +76,7 @@ struct SearchView: View {
                     if isLoading {
                         ProgressView("Searching...").padding()
                     }
-                    
+
                     LazyVStack {
                         ForEach(results, id: \.self) { result in
                             SearchCard(location: result)

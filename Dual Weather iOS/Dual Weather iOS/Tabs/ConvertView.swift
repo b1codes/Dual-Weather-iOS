@@ -15,7 +15,7 @@ struct ConvertView: View {
     // @State properties to hold the string values from the TextFields.
     @State private var fahrenheitString = "32"
     @State private var celsiusString = "0"
-    
+
     // @FocusState to track which TextField is currently active.
     @FocusState private var focusedField: FocusedField?
 
@@ -38,7 +38,7 @@ struct ConvertView: View {
                         .onChange(of: fahrenheitString) { _, newValue in
                             // Only perform conversion if this text field is focused
                             guard focusedField == .fahrenheit else { return }
-                            
+
                             // Convert the string input to a Double
                             if let fahrenheitValue = Double(newValue) {
                                 // Calculate Celsius and update the other text field
@@ -59,7 +59,7 @@ struct ConvertView: View {
                         .onChange(of: celsiusString) { _, newValue in
                             // Only perform conversion if this text field is focused
                             guard focusedField == .celsius else { return }
-                            
+
                             // Convert the string input to a Double
                             if let celsiusValue = Double(newValue) {
                                 // Calculate Fahrenheit and update the other text field

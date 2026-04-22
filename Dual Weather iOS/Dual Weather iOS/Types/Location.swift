@@ -84,7 +84,7 @@ struct Location: Codable, Hashable {
         let lonString = try? values.decode(String.self, forKey: .lon)
 
         let components = displayName.components(separatedBy: ", ")
-        self.city = components.first ?? "Unknown City"
+        self.city = components.first.flatMap { $0.isEmpty ? nil : $0 } ?? "Unknown City"
         self.state = components.dropFirst().dropFirst().first ?? "Unknown State"
         self.latitude = latString.flatMap(Double.init)
         self.longitude = lonString.flatMap(Double.init)
@@ -93,14 +93,14 @@ struct Location: Codable, Hashable {
     // Encoding function to conform to `Encodable`
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
+
         let displayName = "\(city), \(state)"
         try container.encode(displayName, forKey: .displayName)
-        
+
         if let latitude = latitude {
             try container.encode(String(latitude), forKey: .lat)
         }
-        
+
         if let longitude = longitude {
             try container.encode(String(longitude), forKey: .lon)
         }
