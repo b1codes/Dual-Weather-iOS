@@ -62,13 +62,14 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
-Dual Weather iOS/Apple Auth Key V52XCTXQTY.p8
-Dual Weather iOS/Dual Weather iOS/WeatherKitKey
+frontend/Apple Auth Key V52XCTXQTY.p8
+frontend/Dual Weather iOS/WeatherKitKey
 *.p8
-Dual Weather iOS/Dual Weather iOS/Config.xcconfig
+frontend/Dual Weather iOS/Config.xcconfig
 Dual Weather Profile.mobileprovision
-Dual Weather iOS/Dual Weather iOS/GoogleService-Info.plist
+frontend/Dual Weather iOS/GoogleService-Info.plist
 Dual Weather iOS App Profile.mobileprovision
+
 
 # b1CodingTool Generated
 CLAUDE.md
