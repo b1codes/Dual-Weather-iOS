@@ -11,6 +11,7 @@ from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 
 from dual_weather.schemas.location import LocationOut
+from dual_weather.schemas.user import UserProfile
 
 
 def _now_iso() -> str:
@@ -41,6 +42,25 @@ def _item_to_location(item: dict) -> LocationOut:
 class LocationsRepository:
     def __init__(self, table) -> None:
         self._table = table
+
+    def get_or_create_profile(self, *, user_sub: str, email: str | None = None) -> "UserProfile":
+        pk = _user_pk(user_sub)
+        sk = "PROFILE"
+        existing = self._table.get_item(Key={"pk": pk, "sk": sk}).get("Item")
+        if existing:
+            return UserProfile(
+                sub=user_sub,
+                created_at=existing["created_at"],
+                email=existing.get("email"),
+                display_name=existing.get("display_name"),
+            )
+
+        created_at = _now_iso()
+        item = {"pk": pk, "sk": sk, "created_at": created_at}
+        if email:
+            item["email"] = email
+        self._table.put_item(Item=item)
+        return UserProfile(sub=user_sub, created_at=created_at, email=email)
 
     def create(
         self,
