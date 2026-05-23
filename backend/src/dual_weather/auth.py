@@ -38,9 +38,7 @@ def _resolve_user(request: Request, settings: Settings) -> UserProfile:
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthenticated")
 
 
-def _current_user(
-    request: Request, settings: Settings = Depends(get_settings)
-) -> UserProfile:
+def _current_user(request: Request, settings: Settings = Depends(get_settings)) -> UserProfile:
     return _resolve_user(request, settings)
 
 

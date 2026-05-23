@@ -62,9 +62,7 @@ def test_delete_location(moto_dynamo):
             json={"city": "X", "state": "Y", "latitude": 0.0, "longitude": 0.0},
         ).json()
 
-        response = client.delete(
-            f"/locations/{created['id']}", headers={"X-Dev-User-Sub": "u1"}
-        )
+        response = client.delete(f"/locations/{created['id']}", headers={"X-Dev-User-Sub": "u1"})
         assert response.status_code == 204
 
         listed = client.get("/locations", headers={"X-Dev-User-Sub": "u1"}).json()
@@ -76,9 +74,7 @@ def test_delete_location(moto_dynamo):
 def test_delete_nonexistent_returns_404(moto_dynamo):
     client, _ = _setup(moto_dynamo)
     try:
-        response = client.delete(
-            "/locations/does-not-exist", headers={"X-Dev-User-Sub": "u1"}
-        )
+        response = client.delete("/locations/does-not-exist", headers={"X-Dev-User-Sub": "u1"})
         assert response.status_code == 404
         body = response.json()
         assert body["type"].startswith("https://dualweather.app/errors/")

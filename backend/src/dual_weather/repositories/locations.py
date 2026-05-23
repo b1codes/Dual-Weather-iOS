@@ -16,6 +16,7 @@ from dual_weather.schemas.user import UserProfile
 
 def _now_iso() -> str:
     from datetime import UTC, datetime
+
     return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
@@ -43,7 +44,7 @@ class LocationsRepository:
     def __init__(self, table) -> None:
         self._table = table
 
-    def get_or_create_profile(self, *, user_sub: str, email: str | None = None) -> "UserProfile":
+    def get_or_create_profile(self, *, user_sub: str, email: str | None = None) -> UserProfile:
         pk = _user_pk(user_sub)
         sk = "PROFILE"
         existing = self._table.get_item(Key={"pk": pk, "sk": sk}).get("Item")
@@ -86,8 +87,7 @@ class LocationsRepository:
 
     def list(self, *, user_sub: str) -> list[LocationOut]:
         result = self._table.query(
-            KeyConditionExpression=Key("pk").eq(_user_pk(user_sub))
-            & Key("sk").begins_with("LOC#")
+            KeyConditionExpression=Key("pk").eq(_user_pk(user_sub)) & Key("sk").begins_with("LOC#")
         )
         return [_item_to_location(item) for item in result.get("Items", [])]
 

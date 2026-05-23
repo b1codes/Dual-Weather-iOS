@@ -1,5 +1,5 @@
 import pytest
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from dual_weather.auth import current_user
