@@ -1,0 +1,7 @@
+services:
+  dynamodb-local:
+    image: amazon/dynamodb-local:2.5.2
+    container_name: dual-weather-dynamodb
+    ports:
+      - "8001:8000"
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
