@@ -80,3 +80,4 @@ GEMINI.md
 # Added by user request
 .agent/
 agent.md
+.env

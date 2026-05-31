@@ -1,4 +1,4 @@
-.PHONY: dev test lint format up down init-db smoke
+.PHONY: dev test lint format up down init-db smoke package deploy smoke-prod
 
 PYTHON ?= uv run python
 UVICORN ?= uv run uvicorn
@@ -33,3 +33,29 @@ smoke:
 		-d '{"city":"Austin","state":"TX","latitude":30.27,"longitude":-97.74}' | jq .
 	curl -sf http://localhost:8000/locations \
 		-H "X-Dev-User-Sub: smoke-test" | jq .
+
+# --- Deploy ----------------------------------------------------------
+
+package:
+	./scripts/build_lambda.sh
+
+deploy: package
+	./scripts/deploy.sh
+
+smoke-prod:
+	@if [ -z "$$AUTH0_TOKEN" ]; then \
+		echo "AUTH0_TOKEN env var required."; \
+		exit 1; \
+	fi
+	@API_URL=$$(terraform -chdir=../infra/runtime output -raw api_url); \
+	echo "Smoke testing $$API_URL"; \
+	echo "--- /health (no auth)"; \
+	curl -sf "$$API_URL/health" | jq .; \
+	echo "--- POST /locations"; \
+	curl -sf -X POST "$$API_URL/locations" \
+		-H "Authorization: Bearer $$AUTH0_TOKEN" \
+		-H "Content-Type: application/json" \
+		-d '{"city":"Austin","state":"TX","latitude":30.27,"longitude":-97.74}' | jq .; \
+	echo "--- GET /locations"; \
+	curl -sf "$$API_URL/locations" \
+		-H "Authorization: Bearer $$AUTH0_TOKEN" | jq .
