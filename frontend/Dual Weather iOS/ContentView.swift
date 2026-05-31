@@ -1,18 +1,21 @@
-//
-//  ContentView.swift
-//  Dual Weather iOS
-//
-//  Created by Brandon Lamer-Connolly on 1/22/25.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var session: AuthSession
+
     var body: some View {
-        TabUIView()
+        if session.isLoading {
+            ProgressView()
+                .scaleEffect(1.5)
+        } else if session.isAuthenticated {
+            TabUIView()
+        } else {
+            LoginView()
+        }
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(AuthSession())
 }

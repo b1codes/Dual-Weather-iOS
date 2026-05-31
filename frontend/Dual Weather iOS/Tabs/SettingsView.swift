@@ -1,15 +1,9 @@
-//
-//  SettingsView.swift
-//  Dual Weather iOS
-//
-//  Created by Brandon Lamer-Connolly on 1/26/25.
-//
-
 import SwiftUI
 
 struct SettingsView: View {
     @AppStorage("useEmoji") private var useEmoji = false
-    @AppStorage("backgroundTheme") private var backgroundTheme = 0 // 0: Default, 1: Dynamic
+    @AppStorage("backgroundTheme") private var backgroundTheme = 0
+    @EnvironmentObject var session: AuthSession
 
     var body: some View {
         NavigationView {
@@ -22,6 +16,12 @@ struct SettingsView: View {
                         Text("Dynamic Weather").tag(1)
                     }
                 }
+
+                Section {
+                    Button("Sign Out", role: .destructive) {
+                        Task { await session.logout() }
+                    }
+                }
             }
             .navigationTitle("Settings")
         }
@@ -30,4 +30,5 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView()
+        .environmentObject(AuthSession())
 }

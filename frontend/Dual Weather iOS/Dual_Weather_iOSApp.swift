@@ -1,28 +1,20 @@
-//
-//  Dual_Weather_iOSApp.swift
-//  Dual Weather iOS
-//
-//  Created by Brandon Lamer-Connolly on 1/22/25.
-//
-
 import SwiftUI
-import FirebaseCore
-
-class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-
-    return true
-  }
-}
 
 @main
 struct Dual_Weather_iOSApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @StateObject private var authSession = AuthSession()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(authSession)
+                .task {
+                    APIClient.shared.tokenProvider = { [weak authSession] in
+                        guard let session = authSession else { throw APIError.badURL }
+                        return try await session.accessToken()
+                    }
+                    await authSession.checkSession()
+                }
         }
     }
 }

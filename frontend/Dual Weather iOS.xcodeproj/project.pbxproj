@@ -7,10 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7158E8DD2D5011500056395A /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 7158E8DC2D5011500056395A /* FirebaseAnalytics */; };
-		7158E8DF2D5011500056395A /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 7158E8DE2D5011500056395A /* FirebaseCore */; };
-		7158E8E12D5011500056395A /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 7158E8E02D5011500056395A /* FirebaseDatabase */; };
-		7158E8E32D5011500056395A /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 7158E8E22D5011500056395A /* FirebaseFirestore */; };
+		F6378F1C87A7E936324A2759 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = B27AE5B1CC9D68AD5AD1D7DE /* Auth0 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,11 +55,15 @@
 		};
 		71AEA3732D41633700941570 /* Dual Weather iOSTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = "Dual Weather iOSTests";
 			sourceTree = "<group>";
 		};
 		71AEA37D2D41633700941570 /* Dual Weather iOSUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = "Dual Weather iOSUITests";
 			sourceTree = "<group>";
 		};
@@ -73,10 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7158E8E12D5011500056395A /* FirebaseDatabase in Frameworks */,
-				7158E8E32D5011500056395A /* FirebaseFirestore in Frameworks */,
-				7158E8DF2D5011500056395A /* FirebaseCore in Frameworks */,
-				7158E8DD2D5011500056395A /* FirebaseAnalytics in Frameworks */,
+				F6378F1C87A7E936324A2759 /* Auth0 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,10 +135,7 @@
 			);
 			name = "Dual Weather iOS";
 			packageProductDependencies = (
-				7158E8DC2D5011500056395A /* FirebaseAnalytics */,
-				7158E8DE2D5011500056395A /* FirebaseCore */,
-				7158E8E02D5011500056395A /* FirebaseDatabase */,
-				7158E8E22D5011500056395A /* FirebaseFirestore */,
+				B27AE5B1CC9D68AD5AD1D7DE /* Auth0 */,
 			);
 			productName = "Dual Weather iOS";
 			productReference = 71AEA35F2D41633600941570 /* Dual Weather iOS.app */;
@@ -163,8 +158,6 @@
 				71AEA3732D41633700941570 /* Dual Weather iOSTests */,
 			);
 			name = "Dual Weather iOSTests";
-			packageProductDependencies = (
-			);
 			productName = "Dual Weather iOSTests";
 			productReference = 71AEA3702D41633700941570 /* Dual Weather iOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -186,8 +179,6 @@
 				71AEA37D2D41633700941570 /* Dual Weather iOSUITests */,
 			);
 			name = "Dual Weather iOSUITests";
-			packageProductDependencies = (
-			);
 			productName = "Dual Weather iOSUITests";
 			productReference = 71AEA37A2D41633700941570 /* Dual Weather iOSUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -225,7 +216,7 @@
 			mainGroup = 71AEA3562D41633600941570;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				7158E8DB2D5011500056395A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				D214CF4C058F4C206615ABF3 /* XCRemoteSwiftPackageReference "Auth0.swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 71AEA3602D41633600941570 /* Products */;
@@ -669,36 +660,21 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7158E8DB2D5011500056395A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+		D214CF4C058F4C206615ABF3 /* XCRemoteSwiftPackageReference "Auth0.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			repositoryURL = "https://github.com/auth0/Auth0.swift";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 11.7.0;
+				minimumVersion = 2.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		7158E8DC2D5011500056395A /* FirebaseAnalytics */ = {
+		B27AE5B1CC9D68AD5AD1D7DE /* Auth0 */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7158E8DB2D5011500056395A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
-		};
-		7158E8DE2D5011500056395A /* FirebaseCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7158E8DB2D5011500056395A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCore;
-		};
-		7158E8E02D5011500056395A /* FirebaseDatabase */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7158E8DB2D5011500056395A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseDatabase;
-		};
-		7158E8E22D5011500056395A /* FirebaseFirestore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7158E8DB2D5011500056395A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseFirestore;
+			package = D214CF4C058F4C206615ABF3 /* XCRemoteSwiftPackageReference "Auth0.swift" */;
+			productName = Auth0;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
