@@ -17,3 +17,8 @@ output "auth0_issuer" {
   description = "JWT issuer URL — used as the JWT authorizer's issuer URL."
   value       = "https://${var.auth0_domain}/"
 }
+
+output "test_m2m_client_id" {
+  description = "client_id for the test M2M application."
+  value       = auth0_client.test_m2m.client_id
+}

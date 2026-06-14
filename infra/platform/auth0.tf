@@ -75,3 +75,29 @@ resource "auth0_client_grant" "ios_to_api" {
 
   scopes = []
 }
+
+# Machine-to-machine client for local smoke tests and CI/CD pipelines.
+# Uses client_credentials grant — never ship this secret to a mobile app.
+resource "auth0_client" "test_m2m" {
+  name        = "Dual Weather API Test (M2M)"
+  description = "Used for smoke tests and CI — not for production user traffic."
+  app_type    = "non_interactive"
+
+  is_first_party = true
+
+  grant_types = [
+    "client_credentials",
+  ]
+}
+
+resource "auth0_client_grant" "test_m2m_to_api" {
+  client_id = auth0_client.test_m2m.id
+  audience  = auth0_resource_server.api.identifier
+
+  scopes = []
+}
+
+resource "auth0_client_credentials" "test_m2m" {
+  client_id             = auth0_client.test_m2m.id
+  authentication_method = "client_secret_post"
+}
