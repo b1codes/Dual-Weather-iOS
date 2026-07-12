@@ -81,3 +81,8 @@ GEMINI.md
 .agent/
 agent.md
 .env
+
+# impeccable Generated
+PRODUCT.md
+DESIGN.md
+.impeccable/
