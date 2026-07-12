@@ -44,8 +44,10 @@ struct ConvertView: View {
                                 // Calculate Celsius and update the other text field
                                 let celsiusValue = (fahrenheitValue - 32) * 5 / 9
                                 self.celsiusString = numberFormatter.string(from: NSNumber(value: celsiusValue)) ?? ""
-                            } else if newValue.isEmpty {
-                                // Clear the other field if this one is empty
+                            } else {
+                                // Input isn't a complete number yet (empty, or mid-typing
+                                // like "72.") — clear the other field rather than leaving
+                                // a stale converted value that no longer matches what's typed.
                                 self.celsiusString = ""
                             }
                         }
@@ -65,8 +67,10 @@ struct ConvertView: View {
                                 // Calculate Fahrenheit and update the other text field
                                 let fahrenheitValue = (celsiusValue * 9 / 5) + 32
                                 self.fahrenheitString = numberFormatter.string(from: NSNumber(value: fahrenheitValue)) ?? ""
-                            } else if newValue.isEmpty {
-                                // Clear the other field if this one is empty
+                            } else {
+                                // Input isn't a complete number yet (empty, or mid-typing
+                                // like "72.") — clear the other field rather than leaving
+                                // a stale converted value that no longer matches what's typed.
                                 self.fahrenheitString = ""
                             }
                         }
@@ -76,7 +80,7 @@ struct ConvertView: View {
             // Add a toolbar to dismiss the keyboard
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
-                    Button("Clear") {
+                    Button("Clear All") {
                         fahrenheitString = ""
                         celsiusString = ""
                     }
@@ -84,14 +88,6 @@ struct ConvertView: View {
                     Button("Done") {
                         focusedField = nil
                     }
-                }
-            }
-            // Set the initial focus to a field when the view appears
-            .onAppear {
-                // It's good practice to set an initial focus for a better UX.
-                // Here we can decide to focus on fahrenheit by default.
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    focusedField = .fahrenheit
                 }
             }
         }

@@ -82,10 +82,15 @@ struct LocationsGrid: View {
                 ProgressView("Loading locations...").padding()
             } else if let errorMessage {
                 Text(errorMessage).foregroundColor(.red).padding()
+            } else if locations.isEmpty {
+                emptyState
             } else {
                 LazyVGrid(columns: columns, spacing: 30) {
                     ForEach(locations) { location in
-                        NavigationLink(destination: WeatherDetailsView(locationName: location.locationString())) {
+                        NavigationLink(destination: WeatherDetailsView(
+                            locationName: location.locationString(),
+                            coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+                        )) {
                             LocationCard(location: location)
                                 .overlay(
                                     ZStack {
@@ -108,28 +113,57 @@ struct LocationsGrid: View {
             }
         }
     }
+
+    private var emptyState: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "bookmark")
+                .font(.system(size: 40))
+                .foregroundStyle(.secondary)
+            Text("No Saved Locations")
+                .font(AppFont.headline())
+            Text("Search for a city and tap Save to keep it here.")
+                .font(AppFont.label())
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+        }
+        .padding(.top, 80)
+        .accessibilityElement(children: .combine)
+    }
 }
 
 struct DeleteButton: View {
     let location: SavedLocation
     let deleteAction: (SavedLocation) -> Void
+    @State private var showsConfirmation = false
 
     var body: some View {
-        if #available(iOS 26.0, *) {
-            Button(action: { deleteAction(location) }) {
-                Image(systemName: "trash")
-                    .foregroundStyle(.red)
-                    .padding(10)
+        Group {
+            if #available(iOS 26.0, *) {
+                Button(action: { showsConfirmation = true }) {
+                    Image(systemName: "trash")
+                        .foregroundStyle(.red)
+                        .frame(width: 44, height: 44)
+                }
+                .buttonStyle(.glass(.regular.tint(.red)))
+            } else {
+                Button(action: { showsConfirmation = true }) {
+                    Image(systemName: "trash")
+                        .foregroundStyle(.red)
+                        .frame(width: 44, height: 44)
+                }
+                .buttonStyle(.bordered)
+                .tint(.red)
             }
-            .buttonStyle(.glass(.regular.tint(.red)))
-        } else {
-            Button(action: { deleteAction(location) }) {
-                Image(systemName: "trash")
-                    .foregroundStyle(.red)
-                    .padding(10)
-            }
-            .buttonStyle(.bordered)
-            .tint(.red)
+        }
+        .accessibilityLabel("Delete \(location.city)")
+        .confirmationDialog(
+            "Delete \(location.city)?",
+            isPresented: $showsConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) { deleteAction(location) }
+            Button("Cancel", role: .cancel) {}
         }
     }
 }

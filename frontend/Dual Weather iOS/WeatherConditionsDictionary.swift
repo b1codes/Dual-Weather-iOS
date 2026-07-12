@@ -46,43 +46,6 @@ var weatherConditionsDictionary: [WeatherCondition: [Bool: String]] = [ // Bool 
     .tropicalStorm: [true: "tropicalstorm", false: "tropicalstorm"]
 ]
 
-var weatherEmojiDictionary: [WeatherCondition: String] = [
-    .blowingDust: "🌪️",
-    .clear: "☀️",
-    .cloudy: "☁️",
-    .foggy: "🌫️",
-    .haze: "🌫️",
-    .mostlyClear: "🌤️",
-    .mostlyCloudy: "🌥️",
-    .partlyCloudy: "⛅",
-    .smoky: "💨",
-    .breezy: "🌬️",
-    .windy: "💨",
-    .drizzle: "🌦️",
-    .heavyRain: "🌧️",
-    .isolatedThunderstorms: "⛈️",
-    .rain: "🌧️",
-    .sunShowers: "🌦️",
-    .scatteredThunderstorms: "⛈️",
-    .strongStorms: "🌩️",
-    .thunderstorms: "⛈️",
-    .frigid: "🥶",
-    .hail: "🌨️",
-    .hot: "🥵",
-    .flurries: "🌨️",
-    .sleet: "🌨️",
-    .snow: "❄️",
-    .sunFlurries: "🌦️",
-    .wintryMix: "🌨️",
-    .blizzard: "❄️",
-    .blowingSnow: "❄️",
-    .freezingDrizzle: "🌧️",
-    .freezingRain: "🌧️",
-    .heavySnow: "❄️",
-    .hurricane: "🌀",
-    .tropicalStorm: "🌀"
-]
-
 var weatherBackgroundColors: [WeatherCondition: [Color]] = [
     .clear: [Color(red: 0.0, green: 0.28, blue: 0.82), Color(red: 0.0, green: 0.58, blue: 1.0), Color(red: 0.38, green: 0.82, blue: 1.0)],
     .mostlyClear: [Color(red: 0.05, green: 0.32, blue: 0.80), Color(red: 0.1, green: 0.60, blue: 0.96), Color(red: 0.48, green: 0.80, blue: 1.0)],

@@ -15,7 +15,7 @@ struct HomeView: View {
             ScrollView {
                 VStack {
                     if let location = viewModel.currentLocation {
-                        WeatherDetailsView(locationName: location)
+                        WeatherDetailsView(locationName: location, coordinate: viewModel.currentCLLocation?.coordinate)
                     } else if let error = viewModel.locationError {
                         Text(error)
                             .foregroundColor(.red)

@@ -13,6 +13,8 @@ struct MapThumbnailView: View {
     var size: CGSize
 
     @State private var snapshotImage: UIImage?
+    @State private var didFail = false
+    @State private var snapshotter: MKMapSnapshotter?
 
     var body: some View {
         Group {
@@ -21,6 +23,12 @@ struct MapThumbnailView: View {
                     .resizable()
                     .scaledToFill()
                     .frame(width: size.width, height: size.height)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            } else if didFail {
+                Image(systemName: "map")
+                    .foregroundStyle(.secondary)
+                    .frame(width: size.width, height: size.height)
+                    .background(Color.gray.opacity(0.3))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             } else {
                 ProgressView()
@@ -31,6 +39,10 @@ struct MapThumbnailView: View {
                         generateSnapshot()
                     }
             }
+        }
+        .accessibilityHidden(true)
+        .onDisappear {
+            snapshotter?.cancel()
         }
     }
 
@@ -44,11 +56,12 @@ struct MapThumbnailView: View {
         options.scale = UIScreen.main.scale
 
         let snapshotter = MKMapSnapshotter(options: options)
-        snapshotter.start { snapshot, error in
+        self.snapshotter = snapshotter
+        snapshotter.start { snapshot, _ in
             if let snapshot = snapshot {
                 self.snapshotImage = snapshot.image
             } else {
-                print("Error generating map snapshot: \(String(describing: error))")
+                self.didFail = true
             }
         }
     }

@@ -6,13 +6,19 @@ struct SearchCard: View {
     @State private var coordinate: CLLocationCoordinate2D?
     @State private var coordError: String?
     @State private var isSaving = false
-    @State private var savedId: String?
+    @State private var isAlreadySaved: Bool
     @State private var saveErrorMessage: String?
-
-    private var isAlreadySaved: Bool { savedId != nil }
 
     let maxHeight: CGFloat = 100
     let maxWidth: CGFloat = 600
+
+    /// `isInitiallySaved` is looked up once by the parent search list (one shared
+    /// fetch of saved locations) rather than each card re-fetching independently —
+    /// avoids an N+1 network call per search result.
+    init(location: Location, isInitiallySaved: Bool = false) {
+        self.location = location
+        _isAlreadySaved = State(initialValue: isInitiallySaved)
+    }
 
     var body: some View {
         HStack {
@@ -30,21 +36,18 @@ struct SearchCard: View {
             }
 
             Text(location.locationString())
+                .font(AppFont.body())
                 .lineLimit(1)
             Spacer()
             saveButton
         }
         .padding()
         .frame(maxWidth: maxWidth, maxHeight: maxHeight)
-        .background(.thinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 2)
+        .glassSurface(cornerRadius: Radius.small)
         .padding(.horizontal, 12)
         .padding(.vertical, 4)
         .task {
-            async let coord: () = resolveCoordinate()
-            async let saved: () = checkIfAlreadySaved()
-            _ = await (coord, saved)
+            await resolveCoordinate()
         }
         .alert("Save Failed", isPresented: .init(
             get: { saveErrorMessage != nil },
@@ -62,20 +65,22 @@ struct SearchCard: View {
             Button(action: saveLocation) {
                 Image(systemName: isSaving || isAlreadySaved ? "checkmark" : "plus")
                     .fontWeight(.semibold)
-                    .foregroundStyle(isAlreadySaved ? .green : .blue)
-                    .padding(8)
+                    .foregroundStyle(isAlreadySaved ? .green : .primary)
+                    .frame(width: 44, height: 44)
             }
             .buttonStyle(.glass)
             .disabled(isSaving || isAlreadySaved || coordinate == nil)
+            .accessibilityLabel(isAlreadySaved ? "Location saved" : "Save location")
         } else {
             Button(action: saveLocation) {
                 Image(systemName: isSaving || isAlreadySaved ? "checkmark" : "plus")
                     .fontWeight(.semibold)
-                    .foregroundStyle(isAlreadySaved ? .green : .blue)
-                    .padding(8)
+                    .foregroundStyle(isAlreadySaved ? .green : .primary)
+                    .frame(width: 44, height: 44)
             }
             .buttonStyle(.bordered)
             .disabled(isSaving || isAlreadySaved || coordinate == nil)
+            .accessibilityLabel(isAlreadySaved ? "Location saved" : "Save location")
         }
     }
 
@@ -97,27 +102,18 @@ struct SearchCard: View {
         }
     }
 
-    private func checkIfAlreadySaved() async {
-        do {
-            let saved = try await LocationsRepository.shared.fetchLocations()
-            savedId = saved.first(where: { $0.city == location.city && $0.state == location.state })?.id
-        } catch {
-            // Silent fail — show card as unsaved; user can try saving normally.
-        }
-    }
-
     private func saveLocation() {
         guard let coordinate, !isSaving, !isAlreadySaved else { return }
         isSaving = true
         Task {
             do {
-                let saved = try await LocationsRepository.shared.saveLocation(
+                _ = try await LocationsRepository.shared.saveLocation(
                     city: location.city,
                     state: location.state,
                     latitude: coordinate.latitude,
                     longitude: coordinate.longitude
                 )
-                savedId = saved.id
+                isAlreadySaved = true
             } catch {
                 saveErrorMessage = "Could not save \(location.city): \(error.localizedDescription)"
             }

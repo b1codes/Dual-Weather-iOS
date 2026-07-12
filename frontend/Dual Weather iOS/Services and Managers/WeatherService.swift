@@ -50,6 +50,7 @@ actor WeatherCache {
 class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var currentWeather: Weather?
     @Published var currentLocation: String?
+    @Published var currentCLLocation: CLLocation?
     @Published var locationError: String?
     @Published var isLocationAccessGranted: Bool = false
 
@@ -113,6 +114,7 @@ class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         if let location = locations.last {
             let forceRefresh = pendingForceRefresh
             pendingForceRefresh = false
+            currentCLLocation = location
             Task {
                 await fetchWeather(for: location, forceRefresh: forceRefresh)
                 await fetchLocationName(for: location)

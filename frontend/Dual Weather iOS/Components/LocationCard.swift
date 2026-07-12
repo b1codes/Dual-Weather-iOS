@@ -14,16 +14,16 @@ struct LocationCard: View {
     var body: some View {
         VStack {
             Text(location.city)
-                .font(.subheadline)
+                .font(AppFont.headline())
                 .lineLimit(1)
                 .padding([.top, .bottom], 10)
             MapThumbnailView(coordinate: coordinate, size: CGSize(width: 130, height: 130))
         }
         .padding()
         .frame(width: maxWidth, height: maxHeight)
-        .background(.thinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .shadow(color: .black.opacity(0.12), radius: 8, x: 0, y: 4)
+        .glassSurface(cornerRadius: Radius.small)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(location.city), \(location.state)")
     }
 }
 

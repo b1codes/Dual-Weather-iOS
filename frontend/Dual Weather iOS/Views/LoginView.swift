@@ -9,16 +9,18 @@ struct LoginView: View {
             Spacer()
 
             Image(systemName: "cloud.sun.fill")
-                .font(.system(size: 72))
-                .foregroundStyle(.blue, .orange)
+                .font(.system(size: 44))
+                .foregroundStyle(.primary)
+                .frame(width: 96, height: 96)
+                .glassSurface(cornerRadius: 48)
+                .accessibilityHidden(true)
 
             VStack(spacing: 8) {
                 Text("Dual Weather")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+                    .font(AppFont.display())
 
                 Text("Sign in to save and sync locations.")
-                    .font(.subheadline)
+                    .font(AppFont.body())
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
@@ -35,15 +37,17 @@ struct LoginView: View {
             } label: {
                 HStack(spacing: 10) {
                     if isLoggingIn {
-                        ProgressView().tint(.white)
+                        ProgressView()
                     }
                     Text(isLoggingIn ? "Signing in…" : "Continue")
-                        .fontWeight(.semibold)
+                        .font(AppFont.headline())
                 }
+                .foregroundStyle(.primary)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 4)
+                .padding(.vertical, 12)
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.plain)
+            .glassSurface(cornerRadius: Radius.small)
             .disabled(isLoggingIn)
             .padding(.horizontal, 32)
             .padding(.bottom, 48)
