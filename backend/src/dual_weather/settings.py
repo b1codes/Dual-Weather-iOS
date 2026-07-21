@@ -19,6 +19,7 @@ class Settings(BaseSettings):
 
     env: Literal["local", "prod"] = "prod"
     table_name: str = "DualWeather"
+    gcp_project: str = "dual-weather-local"
     log_level: str = "INFO"
 
     auth0_domain: str = ""
@@ -31,6 +32,10 @@ class Settings(BaseSettings):
     @property
     def dynamo_endpoint_url(self) -> str | None:
         return "http://localhost:8001" if self.is_local else None
+
+    @property
+    def firestore_emulator_host(self) -> str | None:
+        return "localhost:8002" if self.is_local else None
 
     @property
     def auth0_issuer(self) -> str:
