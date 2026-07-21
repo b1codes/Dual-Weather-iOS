@@ -5,8 +5,8 @@ from dual_weather.main import app
 from dual_weather.repositories.locations import LocationsRepository
 
 
-def test_me_creates_profile_on_first_call(moto_dynamo):
-    repo = LocationsRepository(table=moto_dynamo)
+def test_me_creates_profile_on_first_call(firestore_db):
+    repo = LocationsRepository(client=firestore_db)
     app.dependency_overrides[get_locations_repository] = lambda: repo
     try:
         client = TestClient(app)
@@ -26,8 +26,8 @@ def test_me_creates_profile_on_first_call(moto_dynamo):
         app.dependency_overrides.clear()
 
 
-def test_me_requires_auth(moto_dynamo):
-    repo = LocationsRepository(table=moto_dynamo)
+def test_me_requires_auth(firestore_db):
+    repo = LocationsRepository(client=firestore_db)
     app.dependency_overrides[get_locations_repository] = lambda: repo
     try:
         client = TestClient(app)
