@@ -1,13 +1,26 @@
-.PHONY: dev test lint format up down init-db smoke package deploy smoke-prod
+.PHONY: dev test lint format up down init-db wait-db smoke package deploy smoke-prod
 
 PYTHON ?= uv run python
 UVICORN ?= uv run uvicorn
+EMULATOR_URL ?= http://localhost:8002
 
 up:
 	docker compose up -d
 
 down:
 	docker compose down
+
+wait-db:
+	@echo "Waiting for Firestore emulator at $(EMULATOR_URL)…"
+	@for i in $$(seq 1 60); do \
+		if curl -sf $(EMULATOR_URL) >/dev/null 2>&1; then \
+			echo "Firestore emulator ready."; \
+			exit 0; \
+		fi; \
+		sleep 1; \
+	done; \
+	echo "ERROR: Firestore emulator not ready after 60s. Is Docker running?"; \
+	exit 1
 
 init-db:
 	$(PYTHON) scripts/init_local_dynamo.py

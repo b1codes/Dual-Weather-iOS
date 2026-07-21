@@ -9,6 +9,7 @@ dependencies = [
     "pydantic>=2.9.0,<3",
     "pydantic-settings>=2.5.0,<3",
     "boto3>=1.35.0,<2",
+    "google-cloud-firestore>=2.28.0,<3",
     "aws-lambda-powertools[parser]>=3.4.0,<4",
 ]
 # Note: `aws-lambda-powertools` is added here so Plan 2 doesn't have to revisit

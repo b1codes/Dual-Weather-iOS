@@ -1,7 +1,9 @@
 services:
-  dynamodb-local:
-    image: amazon/dynamodb-local:2.5.2
-    container_name: dual-weather-dynamodb
+  firestore-emulator:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:577.0.0-emulators
+    container_name: dual-weather-firestore
     ports:
-      - "8001:8000"
-    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
+      - "8002:8080"
+    command: >
+      gcloud emulators firestore start
+      --host-port=0.0.0.0:8080
