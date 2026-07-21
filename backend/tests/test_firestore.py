@@ -32,6 +32,20 @@ def test_get_client_rejects_unconfigured_prod(monkeypatch):
         get_client(Settings())
 
 
+def test_get_client_rejects_prod_with_non_default_project(monkeypatch):
+    """The guard must fire for ANY non-local env, not just the default sentinel.
+
+    A staging/typo project id (anything other than the local default) must
+    still be rejected in a non-local environment, since production Firestore
+    is not provisioned for any project yet.
+    """
+    monkeypatch.setenv("DW_ENV", "prod")
+    monkeypatch.setenv("DW_GCP_PROJECT", "some-staging-project-typo")
+
+    with pytest.raises(RuntimeError, match="GCP cutover"):
+        get_client(Settings())
+
+
 def test_settings_emulator_host_local(monkeypatch):
     monkeypatch.setenv("DW_ENV", "local")
     assert Settings().firestore_emulator_host == "localhost:8002"

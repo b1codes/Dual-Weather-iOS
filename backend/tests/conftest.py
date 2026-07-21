@@ -1,8 +1,32 @@
+import os
+
 import boto3
 import pytest
 from moto import mock_aws
 
 from dual_weather.settings import Settings, get_settings
+
+
+@pytest.fixture(autouse=True)
+def _restore_firestore_emulator_host():
+    """Snapshot/restore FIRESTORE_EMULATOR_HOST around every test.
+
+    dual_weather.firestore.build_client() writes this var directly into
+    os.environ (google-cloud-firestore reads it from the process environment
+    and offers no per-client override, so the mutation is unavoidable and
+    intentionally left in place). monkeypatch.setenv/delenv only reverts
+    changes made through monkeypatch itself, so a raw os.environ write like
+    this one would otherwise leak into every later test in the process. This
+    fixture restores the prior value (including "absent" if it was unset)
+    regardless of which test set it.
+    """
+    sentinel = object()
+    prior = os.environ.get("FIRESTORE_EMULATOR_HOST", sentinel)
+    yield
+    if prior is sentinel:
+        os.environ.pop("FIRESTORE_EMULATOR_HOST", None)
+    else:
+        os.environ["FIRESTORE_EMULATOR_HOST"] = prior
 
 
 @pytest.fixture(autouse=True)

@@ -9,7 +9,7 @@ GCP account or service-account key is needed anywhere in this codebase yet.
 from __future__ import annotations
 
 import os
-from functools import lru_cache
+from functools import cache
 from typing import TYPE_CHECKING
 
 from google.auth.credentials import AnonymousCredentials
@@ -17,8 +17,6 @@ from google.cloud import firestore
 
 if TYPE_CHECKING:
     from dual_weather.settings import Settings
-
-_UNCONFIGURED_PROJECT = "dual-weather-local"
 
 
 def build_client(project: str, emulator_host: str | None) -> firestore.Client:
@@ -29,17 +27,30 @@ def build_client(project: str, emulator_host: str | None) -> firestore.Client:
     return firestore.Client(project=project)
 
 
-@lru_cache(maxsize=1)
+# functools.cache == lru_cache(maxsize=None): entries are never evicted. Each
+# entry wraps a live firestore.Client (and its gRPC channel) that is never
+# explicitly closed, so evicting an entry under an LRU policy would leak that
+# channel. The cache key space is small and bounded (one project/emulator-host
+# pair per environment), so unbounded growth is not a practical concern.
+@cache
 def _cached_client(project: str, emulator_host: str | None) -> firestore.Client:
     return build_client(project, emulator_host)
 
 
 def get_client(settings: Settings) -> firestore.Client:
-    """Return the shared Firestore client for the configured project."""
-    if not settings.is_local and settings.gcp_project == _UNCONFIGURED_PROJECT:
+    """Return the shared Firestore client for the configured project.
+
+    Guard: unconditionally rejects every non-local environment, regardless of
+    what gcp_project is set to. Production Firestore is not provisioned for
+    any project yet, so any non-local run would otherwise fall through to
+    Application Default Credentials discovery and fail with an opaque stack
+    trace. This entire conditional is temporary scaffolding — delete it at
+    the GCP cutover once real Firestore project(s) exist.
+    """
+    if not settings.is_local:
         raise RuntimeError(
-            "DW_GCP_PROJECT is still the local default in a non-local environment. "
-            "Production Firestore is not provisioned yet — this is expected until "
-            "the GCP cutover ticket lands. Do not deploy."
+            "Firestore is not available outside the local environment yet. "
+            "Production Firestore is not provisioned for any GCP project — this "
+            "is expected until the GCP cutover ticket lands. Do not deploy."
         )
     return _cached_client(settings.gcp_project, settings.firestore_emulator_host)
