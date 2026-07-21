@@ -730,14 +730,17 @@ test: up wait-db
 ```
 
 ```make
-deploy: package
+# Blocked until the GCP cutover: this code has no reachable database in prod.
+# To restore, delete the guard below and put back:  deploy: package
+#                                                   	./scripts/deploy.sh
+deploy:
 	@echo "ERROR: Deploys are blocked until the GCP cutover (see"
 	@echo "docs/superpowers/specs/2026-07-21-firestore-local-migration-design.md §7)."
-	@echo "This code has no reachable database in prod. Remove this guard when"
-	@echo "real Firestore is provisioned."
+	@echo "Production Firestore is not provisioned yet."
 	@exit 1
-	./scripts/deploy.sh
 ```
+
+The `package` prerequisite and the `./scripts/deploy.sh` call are removed rather than left after `exit 1` — an unreachable recipe line is dead code. The comment records exactly how to restore them, so `scripts/deploy.sh` itself stays untouched on disk.
 
 - [ ] **Step 8: Update the README**
 
