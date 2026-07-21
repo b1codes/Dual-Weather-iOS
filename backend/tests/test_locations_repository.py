@@ -94,3 +94,33 @@ def test_list_is_empty_for_user_with_profile_but_no_locations(repo):
     repo.get_or_create_profile(user_sub="apple|lonely")
 
     assert repo.list(user_sub="apple|lonely") == []
+
+
+def test_locations_survive_first_profile_write_after_phantom_parent(repo):
+    # In Firestore, writing users/{sub}/locations/{id} does NOT create a real
+    # users/{sub} document -- the parent is a "phantom" until something writes
+    # it directly. get_or_create_profile's first-ever write for a user (ref.set)
+    # is that direct write. If it were ever changed to overwrite the whole
+    # document tree instead of just the parent's own fields (e.g. by deleting
+    # and recreating the doc, or writing via a merge=False path that Firestore
+    # implemented as a subtree replace), this location -- created before the
+    # profile existed -- would vanish from list(). set() on a document reference
+    # only touches that document's fields, not its subcollections, so it should
+    # survive.
+    created = repo.create(
+        user_sub="apple|phantom",
+        city="Austin",
+        state="TX",
+        latitude=30.27,
+        longitude=-97.74,
+    )
+
+    repo.get_or_create_profile(user_sub="apple|phantom", email="phantom@example.com")
+
+    listed = repo.list(user_sub="apple|phantom")
+    assert len(listed) == 1
+    assert listed[0].id == created.id
+    assert listed[0].city == "Austin"
+    assert listed[0].state == "TX"
+    assert listed[0].latitude == pytest.approx(30.27)
+    assert listed[0].longitude == pytest.approx(-97.74)

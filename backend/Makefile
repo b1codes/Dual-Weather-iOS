@@ -8,7 +8,7 @@ up:
 	docker compose up -d
 
 down:
-	docker compose down
+	docker compose down --remove-orphans
 
 wait-db:
 	@echo "Waiting for Firestore emulator at $(EMULATOR_URL)…"
