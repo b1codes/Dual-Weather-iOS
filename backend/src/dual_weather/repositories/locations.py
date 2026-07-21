@@ -1,9 +1,8 @@
 """Firestore access for the Location and UserProfile entities.
 
 Documents live at `users/{sub}` (profile) and `users/{sub}/locations/{id}`.
-The subcollection path supplies the per-user scoping that DynamoDB encoded in
-`pk = USER#<sub>`, so no ownership filter is needed on reads — the path itself
-is the authorization boundary.
+The subcollection path supplies the per-user scoping, so no ownership filter
+is needed on reads — the path itself is the authorization boundary.
 """
 
 from __future__ import annotations

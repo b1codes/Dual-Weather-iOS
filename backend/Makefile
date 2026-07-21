@@ -1,4 +1,4 @@
-.PHONY: dev test lint format up down init-db wait-db smoke package deploy smoke-prod
+.PHONY: dev test lint format up down wait-db smoke package deploy smoke-prod
 
 PYTHON ?= uv run python
 UVICORN ?= uv run uvicorn
@@ -22,13 +22,10 @@ wait-db:
 	echo "ERROR: Firestore emulator not ready after 60s. Is Docker running?"; \
 	exit 1
 
-init-db:
-	$(PYTHON) scripts/init_local_dynamo.py
-
-dev: up init-db
+dev: up wait-db
 	DW_ENV=local PYTHONPATH=src $(UVICORN) dual_weather.main:app --reload --host 0.0.0.0 --port 8000
 
-test:
+test: up wait-db
 	uv run pytest -v
 
 lint:
@@ -52,8 +49,14 @@ smoke:
 package:
 	./scripts/build_lambda.sh
 
-deploy: package
-	./scripts/deploy.sh
+# Blocked until the GCP cutover: this code has no reachable database in prod.
+# To restore, delete the guard below and put back:  deploy: package
+#                                                   	./scripts/deploy.sh
+deploy:
+	@echo "ERROR: Deploys are blocked until the GCP cutover (see"
+	@echo "docs/superpowers/specs/2026-07-21-firestore-local-migration-design.md §7)."
+	@echo "Production Firestore is not provisioned yet."
+	@exit 1
 
 smoke-prod:
 	@if [ -z "$$AUTH0_TOKEN" ]; then \
