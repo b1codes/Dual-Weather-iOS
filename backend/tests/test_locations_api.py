@@ -5,14 +5,14 @@ from dual_weather.main import app
 from dual_weather.repositories.locations import LocationsRepository
 
 
-def _setup(moto_dynamo) -> tuple[TestClient, LocationsRepository]:
-    repo = LocationsRepository(table=moto_dynamo)
+def _setup(firestore_db) -> tuple[TestClient, LocationsRepository]:
+    repo = LocationsRepository(client=firestore_db)
     app.dependency_overrides[get_locations_repository] = lambda: repo
     return TestClient(app), repo
 
 
-def test_create_location(moto_dynamo):
-    client, _ = _setup(moto_dynamo)
+def test_create_location(firestore_db):
+    client, _ = _setup(firestore_db)
     try:
         response = client.post(
             "/locations",
@@ -28,8 +28,8 @@ def test_create_location(moto_dynamo):
         app.dependency_overrides.clear()
 
 
-def test_list_returns_only_users_own_locations(moto_dynamo):
-    client, _ = _setup(moto_dynamo)
+def test_list_returns_only_users_own_locations(firestore_db):
+    client, _ = _setup(firestore_db)
     try:
         client.post(
             "/locations",
@@ -53,8 +53,8 @@ def test_list_returns_only_users_own_locations(moto_dynamo):
         app.dependency_overrides.clear()
 
 
-def test_delete_location(moto_dynamo):
-    client, _ = _setup(moto_dynamo)
+def test_delete_location(firestore_db):
+    client, _ = _setup(firestore_db)
     try:
         created = client.post(
             "/locations",
@@ -71,8 +71,8 @@ def test_delete_location(moto_dynamo):
         app.dependency_overrides.clear()
 
 
-def test_delete_nonexistent_returns_404(moto_dynamo):
-    client, _ = _setup(moto_dynamo)
+def test_delete_nonexistent_returns_404(firestore_db):
+    client, _ = _setup(firestore_db)
     try:
         response = client.delete("/locations/does-not-exist", headers={"X-Dev-User-Sub": "u1"})
         assert response.status_code == 404
@@ -83,8 +83,8 @@ def test_delete_nonexistent_returns_404(moto_dynamo):
         app.dependency_overrides.clear()
 
 
-def test_create_validates_latitude(moto_dynamo):
-    client, _ = _setup(moto_dynamo)
+def test_create_validates_latitude(firestore_db):
+    client, _ = _setup(firestore_db)
     try:
         response = client.post(
             "/locations",
@@ -96,8 +96,8 @@ def test_create_validates_latitude(moto_dynamo):
         app.dependency_overrides.clear()
 
 
-def test_locations_requires_auth(moto_dynamo):
-    client, _ = _setup(moto_dynamo)
+def test_locations_requires_auth(firestore_db):
+    client, _ = _setup(firestore_db)
     try:
         response = client.get("/locations")
         assert response.status_code == 401

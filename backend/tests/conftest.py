@@ -1,9 +1,11 @@
 import os
+import uuid
 
 import boto3
 import pytest
 from moto import mock_aws
 
+from dual_weather.firestore import build_client
 from dual_weather.settings import Settings, get_settings
 
 
@@ -59,6 +61,20 @@ def moto_dynamo():
             ],
         )
         yield boto3.resource("dynamodb", region_name="us-east-2").Table("DualWeatherTest")
+
+
+@pytest.fixture
+def firestore_db():
+    """A Firestore client bound to a project ID unique to this test.
+
+    The emulator partitions data by project, so a fresh project ID gives complete
+    isolation with no inter-test cleanup — cheaper and less error-prone than
+    deleting collections between tests.
+    """
+    project = f"test-{uuid.uuid4().hex[:12]}"
+    client = build_client(project, "localhost:8002")
+    yield client
+    client.close()
 
 
 @pytest.fixture
